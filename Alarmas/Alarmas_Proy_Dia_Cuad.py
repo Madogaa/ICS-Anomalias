@@ -36,11 +36,16 @@ def alarmasdiavta(mes,dia):
     dias = dias.merge(mod,on=['IdProy'],how='inner')
     dias['VtaMes'] = dias['a'] * MESI_MAX**2 + dias['b'] * MESI_MAX + dias['c']
     dias = dias.drop(['a','b','c'],axis=1)
-    dias['Acum'] = dias.groupby(['IdProy'])['Monto'].cumsum()
-    dias['Vta%'] = (dias['Acum'] / dias['VtaMes'])  * 100
+    dias['Venta Real'] = dias.groupby(['IdProy'])['Monto'].cumsum()
+    dias['Venta Real %'] = (dias['Venta Real'] / dias['VtaMes'])  * 100
     dias = dias.merge(prom,on=['IdProy','diai'],how='inner')
-    dias.loc[dias['Vta%'] < (dias['nivel']), 'alarma'] = 'Facturacion retrasada'
+    dias.loc[dias['Venta Real %'] < (dias['nivel']), 'alarma'] = 'Facturacion retrasada'
+    dias['Venta Prevista'] = (dias['prom'] / 100) * dias['VtaMes']
+    dias = dias.rename(columns={'prom':'Venta Prevista %','nivel': 'nivel %'})
+    dias['nivel'] = (dias['nivel %'] / 100) * dias['VtaMes']
+    dias = dias[['IdProy','diai','Venta Real','Venta Prevista','nivel','Venta Real %','Venta Prevista %','nivel %','alarma']]
     return dias
+
 # Alarma de si algún día se ha facturado un gasto antes de lo previsto segun el modelo
 def alarmasdiagto(mes,dia):
     all = Filtro()
@@ -65,16 +70,21 @@ def alarmasdiagto(mes,dia):
     diccionario = {'IdProy': proyecto,'dia': emptydia,'Monto': 0}
     empty = pd.DataFrame(diccionario)
     dias = pd.concat([dias,empty],axis=0).groupby(['IdProy','dia']).Monto.sum().to_frame().reset_index()
+
     dias = dias.merge(mod,on=['IdProy'],how='inner')
     dias['VtaMes'] = dias['a'] * MESI_MAX**2 + dias['b'] * MESI_MAX + dias['c']
     dias = dias.drop(['a','b','c'],axis=1)
-    dias['Acum'] = dias.groupby(['IdProy'])['Monto'].cumsum()
-    dias['Vta%'] = (dias['Acum'] / dias['VtaMes'])  * 100
+    dias['Gasto Real'] = dias.groupby(['IdProy'])['Monto'].cumsum()
+    dias['Gasto Real %'] = (dias['Gasto Real'] / dias['VtaMes'])  * 100
     dias = dias.merge(prom,on=['IdProy','dia'],how='inner')
-    dias.loc[dias['Vta%'] > (dias['nivel']), 'alarma'] = 'Fact gasto adelantado'
+    dias.loc[dias['Gasto Real %'] < (dias['nivel']), 'alarma'] = 'Facturacion retrasada'
+    dias['Gasto Previsto'] = (dias['prom'] / 100) * dias['VtaMes']
+    dias = dias.rename(columns={'prom':'Gasto Previsto %','nivel': 'nivel %'})
+    dias['nivel'] = (dias['nivel %'] / 100) * dias['VtaMes']
+    dias = dias[['IdProy','dia','Gasto Real','Gasto Previsto','nivel','Gasto Real %','Gasto Previsto %','nivel %','alarma']]
     return dias
 
-df = alarmasdiavta(29,31)
-df = df[~df['alarma'].isnull() & (df['diai'] == 29)]
+df = alarmasdiagto(29,31)
+# df = df[~df['alarma'].isnull() & (df['diai'] == 29)]
 df
 # %%

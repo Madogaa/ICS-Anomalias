@@ -20,6 +20,7 @@ def alarmas_nrocue(mes):
     nrocu = round(all.groupby(by=lista).Monto.sum().to_frame()/1000000,3).reset_index()
     nrocu.loc[~nrocu['CuentaNro'].isin(NrosCuenta),'CuentaNombre']='VARIOS'
     nrocu.loc[~nrocu['CuentaNro'].isin(NrosCuenta),'CuentaNro']='1000000'
+    nrocu = (nrocu.groupby(lista).Monto.sum().to_frame()).reset_index()
     nrocu = nrocu.merge(mod,on=['IdProy','CuentaNro'],how='inner')
     nrocu['nivel+'] = ((nrocu['a'] * nrocu['mesi']**2) + nrocu['b'] * nrocu['mesi'] + nrocu['c']) + 1.28* nrocu['desv']
     nrocu['nivel-'] = ((nrocu['a'] * nrocu['mesi']**2) + nrocu['b'] * nrocu['mesi'] + nrocu['c']) - 1.28* nrocu['desv']

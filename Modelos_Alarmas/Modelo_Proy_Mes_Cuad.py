@@ -11,7 +11,7 @@ def promventas():
     all = Filtro()
     lista=['IdProy','mesi']
     all = all[(all['mesi'] < 29 ) & (all['TipoMov'] == 'VTA')]
-    all = round(all.groupby(by=lista).Monto.sum().to_frame()/1000000,3)
+    all = all.groupby(by=lista).Monto.sum().to_frame()/1000000
     all = all.reset_index()
     idproy = all['IdProy'].unique()
     proyectos=[]
@@ -56,7 +56,7 @@ def promgastos():
     all = Filtro()
     lista=['IdProy','mes']
     all = all[(all['mes'] < 29 ) & ((all['TipoMov'] == 'GTO') |(all['TipoMov'] == 'ACT'))]
-    all = round(all.groupby(by=lista).Monto.sum().to_frame()/1000000,3)
+    all = all.groupby(by=lista).Monto.sum().to_frame()/1000000
     all = all.reset_index()
     idproy = all['IdProy'].unique()
     proyectos=[]
@@ -102,7 +102,7 @@ def prommb():
     all = Filtro()
     lista=['IdProy','mesi']
     all = all[(all['mesi'] < 29 )]
-    all = round(all.groupby(by=lista).Monto.sum().to_frame()/1000000,3)
+    all = all.groupby(by=lista).Monto.sum().to_frame()/1000000
     all = all.reset_index()
     idproy = all['IdProy'].unique()
     proyectos=[]
@@ -143,6 +143,6 @@ def prommb():
     df = pd.DataFrame(diccionario)
     return df
 
-df = promventas()
+df = promgastos()
 df
 # %%
