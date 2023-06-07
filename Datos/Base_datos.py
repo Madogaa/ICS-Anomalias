@@ -50,7 +50,7 @@ def act_dateFinal(df):
     fecha = fecha.strftime('%Y-%m-%d')
     return fecha
 
-df = df_DatosFinal()
+df = Filtro()
 df
 #Se imprime el filtrado
 # %%
