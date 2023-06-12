@@ -53,6 +53,5 @@ def alarmas_nrocc_dia(mes,dia):
 
 df = alarmas_nrocc_dia(29,31)
 df = df[df['alarma'].notna()]
-df.to_excel('Alarmas_NroCC_Dia.xlsx')
 df
 # %%

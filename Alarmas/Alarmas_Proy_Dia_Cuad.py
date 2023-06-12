@@ -7,7 +7,7 @@ from Datos.Base_datos import *
 from Modelos_Alarmas.Modelo_Proy_Dia_Cuad import*
 
 # Alarma de si algún día se ha podido retrasar alguna venta de lo previsto según el modelo
-def alarmasdiavta(mes,dia):
+def alarmasdiavta(dia,mes):
     all = Filtro()
     # 23-05-2023
     MESI_MAX = mes # Mes actual para comparar (contexto de datos)

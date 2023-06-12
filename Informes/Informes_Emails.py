@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from tabulate import tabulate
 from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
 
 def enviar_email(destinatario, asunto, mensaje):
     # Configurar los detalles del servidor de correo
@@ -45,15 +46,13 @@ def enviar_email(destinatario, asunto, mensaje):
     finally:
         servidor.quit()
 
-def enviar_informe(dia,mes,año):
+def enviar_informe(dia,mes,año,alarmas):
     DIA = dia
-    MES = mes
-    MES_NORM = (mes - 12 * (año-2021))
-    alarmas = alarmasdiavta(MES,dia)
     alarmas = alarmas[(~alarmas['alarma'].isnull()) & (alarmas['diai'] == DIA)]
+    if(alarmas.empty):
+        return f'No hay alarmas para la fecha: {dia}-{mes}-{año}'
+    MES_NORM = (mes - 12 * (año-2021))
     alarmas['IdProy'] = alarmas['IdProy'].astype(int)
-    alarmas = alarmas[['IdProy','VtaMes','Acum','Vta%','prom','nivel','alarma']]
-    alarmas = alarmas.rename(columns={'Acum':'Referencia','Vta%' : 'Referencia %'})
     alarmas = alarmas.round(2)
     # Header informe
     mensaje = '<h2>Dia del informe: ' + str(DIA) + '</h2>'
@@ -78,11 +77,14 @@ def enviar_informe(dia,mes,año):
             fila['style'] = 'text-align: center;'
 
     # Ejemplo de uso
-    destinatario = 'mariodg2001@gmail.com'
-    asunto = 'Anomalias Facturacion Diaria 29-05-2023'
+    destinatario = 'alumno.38254@ies-azarquiel.es'
+    asunto = f'Anomalias Facturacion Diaria {dia}-{mes}-{año}'
     mensaje += soup.prettify()
     enviar_email(destinatario, asunto, mensaje)
 
-enviar_informe(29,29,2023)
-
+fecha = datetime.now() - timedelta(days=1)
+dia = fecha.day
+mes = fecha.month
+anio = fecha.year
+enviar_informe(dia,mes,anio,alarmasdiavta(dia,mes))
 # %%

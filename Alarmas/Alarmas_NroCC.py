@@ -26,7 +26,6 @@ def alarmas_nrocue(mes):
     return nrocu
 
 df = alarmas_nrocue(29)
-df.to_excel('nroccobra.xlsx')
 df
 
 # %%

@@ -1,3 +1,4 @@
+
 # %%
 # Importación de librerias:
 import pandas as pd
@@ -5,12 +6,12 @@ import pyodbc
 
 # Base de datos conectada desde sql server:
 def df_Datos():
-    conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=dbtstanalytics.database.windows.net;DATABASE=tstanalytics;UID=analyticsreader;PWD=@q$eQX89Xp7yUEm')# Creamos la consulta:
+    conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=dbprdanalytics.database.windows.net;DATABASE=analytics;UID=analyticsreader;PWD=c2K$t1p97BHD2v')# Creamos la consulta:
     df = pd.read_sql_query('SELECT * FROM Output_EstadoDeResultados', conn )
     return df
 
 def df_DatosFinal():
-    conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=dbtstanalytics.database.windows.net;DATABASE=tstanalytics;UID=analyticsreader;PWD=@q$eQX89Xp7yUEm')# Creamos la consulta:
+    conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=dbprdanalytics.database.windows.net;DATABASE=analytics;UID=analyticsreader;PWD=c2K$t1p97BHD2v')# Creamos la consulta:
     df = pd.read_sql_query('SELECT * FROM Output_BalanceFinal', conn )
     return df
 
