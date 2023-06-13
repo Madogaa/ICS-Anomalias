@@ -20,6 +20,22 @@ def alarmasventas(mes):
     all = all.drop(['a','b','c','desv'],axis=1)
     return all
 
+def alarmasventas_rango(mesi,mesf):
+    all=Filtro()
+    all = all[(all['mesi'] >= mesi) & (all['mesi'] <= mesf) & (all['TipoMov'] == 'VTA')]
+    all = round(all.groupby(['IdProy','mesi']).Monto.sum().to_frame()/1000000,3).reset_index()
+    pred = promventas()
+    all = all.merge(pred,on=['IdProy'],how='inner')
+    all['prom'] = (all['a'] * all['mesi']**2 + all['b'] * all['mesi'] + all['c'])
+    all['nivel+'] =  all['prom'] + 1.28 * all['desv']
+    all['nivel-'] =  all['prom'] - 1.28 * all['desv']
+    all.loc[(all['Monto'] < all['nivel-']), 'alarma'] = 'Ventas bajas'
+    all.loc[(all['Monto'] > all['nivel+']), 'alarma'] = 'Ventas altas'
+    all = all[~all['alarma'].isnull()]
+    all = all.drop(['a','b','c','desv'],axis=1)
+    return all
+
+
 def alarmasgastos(mes):
     MES = mes
     all=Filtro()
