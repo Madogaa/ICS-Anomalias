@@ -1,4 +1,6 @@
 # %%
+import os
+os.chdir(r'C:\\Users\\mario\\OneDrive\Documentos\\AnomaliasICS\\Códigos_Análisis')
 
 import pandas as pd
 from Datos.Base_datos import *
@@ -68,6 +70,6 @@ def alarmasmb(mes):
     all = all.drop(['a','b','c','desv'],axis=1)
     return all
 
-df = alarmasmb(29)
+df = alarmasventas(28)
 df
 # %%
